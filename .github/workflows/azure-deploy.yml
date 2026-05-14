@@ -50,7 +50,7 @@ jobs:
             az containerapp update \
               --name ${{ matrix.service.name }} \
               --resource-group ConnectHub_RG \
-              --image ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }} \
+              --image ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }} \
               --set-env-vars \
                 GOOGLE_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
                 GOOGLE_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
