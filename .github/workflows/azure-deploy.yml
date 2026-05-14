@@ -33,20 +33,20 @@ jobs:
       - name: Log in to ACR
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          login-server: ${{ secrets.ACR_NAME }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }} -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:latest ${{ matrix.service.path }}
-          docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }}
-          docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:latest
+          docker build -t ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }} -t ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:latest ${{ matrix.service.path }}
+          docker push ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }}
+          docker push ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:latest
 
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ matrix.service.name }}
           resourceGroup: ConnectHub_RG
-          imageToDeploy: ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }}
+          imageToDeploy: ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }}
           containerAppEnvironment: connecthub-env
