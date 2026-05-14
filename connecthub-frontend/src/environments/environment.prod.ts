@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://apigateway.greenground-4663d9d2.southeastasia.azurecontainerapps.io/api',
+  apiUrl: 'https://apigateway.greenground-4663d9d2.southeastasia.azurecontainerapps.io',
   hubUrl: 'https://apigateway.greenground-4663d9d2.southeastasia.azurecontainerapps.io/hubs/chat'
 };
