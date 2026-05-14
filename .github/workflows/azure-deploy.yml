@@ -54,9 +54,4 @@ jobs:
           registryUsername: ${{ secrets.ACR_USERNAME }}
           registryPassword: ${{ secrets.ACR_PASSWORD }}
           targetPort: 10000
-          environmentVariables: |
-            GOOGLE_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            ConnectionStrings__AzureBlobStorage=${{ secrets.AZURE_STORAGE_CONNECTION }}
-            FrontendUrl=https://connecthubfrontend.z23.web.core.windows.net
-            AllowedOrigins=https://connecthubfrontend.z23.web.core.windows.net,http://localhost:4200
+          environmentVariables: GOOGLE_ID=${{ secrets.GOOGLE_CLIENT_ID }} GOOGLE_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} ConnectionStrings__AzureBlobStorage=${{ secrets.AZURE_STORAGE_CONNECTION }} FrontendUrl=https://connecthubfrontend.z23.web.core.windows.net AllowedOrigins=https://connecthubfrontend.z23.web.core.windows.net,http://localhost:4200
