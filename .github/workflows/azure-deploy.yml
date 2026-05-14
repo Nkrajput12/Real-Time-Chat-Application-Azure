@@ -50,5 +50,6 @@ jobs:
           resourceGroup: ConnectHub_RG
           imageToDeploy: ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }}
           containerAppEnvironment: connecthub-env
-          acrUsername: ${{ secrets.ACR_USERNAME }}
-          acrPassword: ${{ secrets.ACR_PASSWORD }}
+          registryUrl: ${{ secrets.ACR_NAME }}
+          registryUsername: ${{ secrets.ACR_USERNAME }}
+          registryPassword: ${{ secrets.ACR_PASSWORD }}
