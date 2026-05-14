@@ -1,0 +1,52 @@
+name: Deploy ConnectHub to Azure
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-backend:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [
+          { name: 'auth-service', path: './services/ConnectHub.Authentication' },
+          { name: 'message-service', path: './services/ConnectHub.Messaging' },
+          { name: 'room-service', path: './services/ConnectHub.ChatRoom-Servic' },
+          { name: 'presence-service', path: './services/ConnectHub.Presence-Service' },
+          { name: 'notification-service', path: './services/ConnectHub.Notification-Service' },
+          { name: 'media-service', path: './services/ConnectHub.Media.API' },
+          { name: 'apigateway', path: './ApiGateway' }
+        ]
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }} -t ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:latest ${{ matrix.service.path }}
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }}
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:latest
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          containerAppName: ${{ matrix.service.name }}
+          resourceGroup: ConnectHub_RG
+          imageToDeploy: ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }}
+          containerAppEnvironment: connecthub-env
