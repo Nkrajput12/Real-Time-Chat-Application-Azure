@@ -1,0 +1,35 @@
+name: Frontend Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'connecthub-frontend/**'
+      - '.github/workflows/frontend-deploy.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './connecthub-frontend/package-lock.json'
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./connecthub-frontend
+
+    - name: Build Angular App
+      run: npm run build -- --configuration production
+      working-directory: ./connecthub-frontend
+
+    - name: Upload to Azure Storage
+      uses: Azure/cli@v2
+      with:
+        inlineScript: |
+          az storage blob upload-batch --account-name connecthubfrontend --auth-mode key --connection-string "${{ secrets.FRONTEND_STORAGE_CONNECTION }}" --destination '$web' --source ./connecthub-frontend/dist/connecthub-frontend/browser --overwrite true
