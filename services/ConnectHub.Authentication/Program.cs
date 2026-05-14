@@ -67,10 +67,13 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(options =>
 {
-    var clientId = builder.Configuration["Authentication:Google:ClientId"];
-    Console.WriteLine($"[DEBUG] Google ClientId starts with: {clientId?.Substring(0, Math.Min(clientId.Length, 3))}...");
+    var clientId = builder.Configuration["GOOGLE_ID"] ?? builder.Configuration["Authentication:Google:ClientId"];
+    var clientSecret = builder.Configuration["GOOGLE_SECRET"] ?? builder.Configuration["Authentication:Google:ClientSecret"];
+    
+    Console.WriteLine($"[DEBUG] Using Google ID starting with: {clientId?.Substring(0, Math.Min(clientId.Length, 3))}...");
+    
     options.ClientId = clientId!;
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+    options.ClientSecret = clientSecret!;
     options.CorrelationCookie.SameSite = SameSiteMode.None;
     options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
 });
