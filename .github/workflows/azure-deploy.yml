@@ -53,3 +53,4 @@ jobs:
           registryUrl: ${{ secrets.ACR_NAME }}
           registryUsername: ${{ secrets.ACR_USERNAME }}
           registryPassword: ${{ secrets.ACR_PASSWORD }}
+          targetPort: 10000
