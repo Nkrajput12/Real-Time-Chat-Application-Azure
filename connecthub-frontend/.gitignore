@@ -3,10 +3,6 @@ node_modules/
 dist/
 .angular/
 
-# Environment settings
-# We track both so the build can resolve the imports
-src/environments/*.ts
-
 # OS specific
 .DS_Store
 Thumbs.db
