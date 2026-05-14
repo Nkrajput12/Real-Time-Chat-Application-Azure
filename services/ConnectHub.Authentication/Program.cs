@@ -70,10 +70,11 @@ builder.Services.AddAuthentication(options =>
     var clientId = builder.Configuration["GOOGLE_ID"] ?? builder.Configuration["Authentication:Google:ClientId"];
     var clientSecret = builder.Configuration["GOOGLE_SECRET"] ?? builder.Configuration["Authentication:Google:ClientSecret"];
     
-    Console.WriteLine($"[DEBUG] Using Google ID starting with: {clientId?.Substring(0, Math.Min(clientId.Length, 3))}...");
+    Console.WriteLine($"[DEBUG] GOOGLE_ID: {(string.IsNullOrEmpty(clientId) ? "MISSING" : clientId.Substring(0, Math.Min(clientId.Length, 3)) + " (Length: " + clientId.Length + ")")}");
+    Console.WriteLine($"[DEBUG] GOOGLE_SECRET: {(string.IsNullOrEmpty(clientSecret) ? "MISSING" : clientSecret.Substring(0, Math.Min(clientSecret.Length, 3)) + " (Length: " + clientSecret.Length + ")")}");
     
-    options.ClientId = clientId!;
-    options.ClientSecret = clientSecret!;
+    options.ClientId = clientId ?? "MISSING";
+    options.ClientSecret = clientSecret ?? "MISSING";
     options.CorrelationCookie.SameSite = SameSiteMode.None;
     options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
 });
