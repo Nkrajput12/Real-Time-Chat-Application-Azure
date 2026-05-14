@@ -35,6 +35,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => false;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
 //Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -63,6 +69,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
+    options.CorrelationCookie.SameSite = SameSiteMode.None;
+    options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 
@@ -180,7 +188,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger"; // Swagger will be at /swagger
 });
 
-
+app.UseCookiePolicy();
 app.UseCors("AllowFrontend");
 
 
