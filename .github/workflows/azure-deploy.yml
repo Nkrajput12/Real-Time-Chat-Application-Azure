@@ -44,14 +44,16 @@ jobs:
           docker push ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:latest
 
       - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v1
+        uses: azure/CLI@v1
         with:
-          containerAppName: ${{ matrix.service.name }}
-          resourceGroup: ConnectHub_RG
-          imageToDeploy: ${{ secrets.ACR_NAME }}/${{ matrix.service.name }}:${{ github.sha }}
-          containerAppEnvironment: connecthub-env
-          registryUrl: ${{ secrets.ACR_NAME }}
-          registryUsername: ${{ secrets.ACR_USERNAME }}
-          registryPassword: ${{ secrets.ACR_PASSWORD }}
-          targetPort: 10000
-          environmentVariables: GOOGLE_ID=${{ secrets.GOOGLE_CLIENT_ID }} GOOGLE_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} ConnectionStrings__AzureBlobStorage=${{ secrets.AZURE_STORAGE_CONNECTION }} FrontendUrl=https://connecthubfrontend.z23.web.core.windows.net AllowedOrigins=https://connecthubfrontend.z23.web.core.windows.net,http://localhost:4200
+          inlineScript: |
+            az containerapp update \
+              --name ${{ matrix.service.name }} \
+              --resource-group ConnectHub_RG \
+              --image ${{ secrets.ACR_NAME }}.azurecr.io/${{ matrix.service.name }}:${{ github.sha }} \
+              --set-env-vars \
+                GOOGLE_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+                GOOGLE_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                ConnectionStrings__AzureBlobStorage="${{ secrets.AZURE_STORAGE_CONNECTION }}" \
+                FrontendUrl="https://connecthubfrontend.z23.web.core.windows.net" \
+                AllowedOrigins="https://connecthubfrontend.z23.web.core.windows.net,http://localhost:4200"
