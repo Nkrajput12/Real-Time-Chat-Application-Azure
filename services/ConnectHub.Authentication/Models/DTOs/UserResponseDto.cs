@@ -12,4 +12,5 @@ public class UserResponseDto
     public DateTime LastSeen { get; set; }
     public DateTime CreatedAt { get; set; }
     public string Role { get; set; } = "User";
+    public bool IsActive { get; set; }
 }

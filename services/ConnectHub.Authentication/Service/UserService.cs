@@ -270,7 +270,8 @@ public class UserService : IUserService
             IsOnline = user.IsOnline,
             LastSeen = user.LastSeen,
             CreatedAt = user.CreatedAt,
-            Role = user.Role
+            Role = user.Role,
+            IsActive = user.IsActive
         };
     }
 }
