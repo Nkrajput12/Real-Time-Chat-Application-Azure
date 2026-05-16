@@ -9,7 +9,6 @@
         <button class="tab" [class.active]="tab==='overview'" (click)="tab='overview'">📊 Overview</button>
         <button class="tab" [class.active]="tab==='users'" (click)="tab='users';loadUsers()">👥 Users</button>
         <button class="tab" [class.active]="tab==='rooms'" (click)="tab='rooms';loadRooms()">🌐 Rooms</button>
-        <button class="tab" [class.active]="tab==='broadcast'" (click)="tab='broadcast'">📢 Broadcast</button>
       </div>
 
       <!-- Overview tab -->
@@ -138,21 +137,4 @@
         </div>
       </div>
 
-      <!-- Broadcast tab -->
-      <div *ngIf="tab === 'broadcast'">
-        <div class="broadcast-box">
-          <h3 style="margin-bottom:16px">📢 Send Platform Notification</h3>
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <div class="form-group">
-              <label class="form-label">Message to all users</label>
-              <textarea class="input-field" [(ngModel)]="broadcastMsg" rows="4" placeholder="Write your platform-wide announcement here..."></textarea>
-            </div>
-            <div *ngIf="broadcastResult" class="alert" [class]="broadcastResult.type === 'success' ? 'alert-success' : 'alert-error'">{{ broadcastResult.text }}</div>
-            <button class="btn btn-primary" (click)="broadcast()" [disabled]="!broadcastMsg.trim() || broadcasting" style="align-self:flex-start">
-              <span *ngIf="broadcasting" class="spinner" style="width:14px;height:14px;border-width:2px"></span>
-              {{ broadcasting ? 'Sending...' : '📢 Broadcast to All Users' }}
-            </button>
-          </div>
-        </div>
-      </div>
     </div>

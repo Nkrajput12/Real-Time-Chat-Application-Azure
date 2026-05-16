@@ -27,9 +27,6 @@ export class AdminComponent implements OnInit {
   filteredRooms: ChatRoom[] = [];
   roomsLoading = false;
   roomSearch = '';
-  broadcastMsg = '';
-  broadcasting = false;
-  broadcastResult: { type: string; text: string } | null = null;
   currentUserId: number;
 
   constructor(
@@ -91,24 +88,6 @@ export class AdminComponent implements OnInit {
     this.adminService.forceDeleteRoom(r.roomId).subscribe({
       next: () => { this.rooms = this.rooms.filter(x => x.roomId !== r.roomId); this.filterRooms(); this.cdr.detectChanges(); },
       error: () => alert('Delete failed.')
-    });
-  }
-
-  broadcast(): void {
-    this.broadcasting = true; this.broadcastResult = null;
-    this.notifService.broadcast(this.broadcastMsg).subscribe({
-      next: () => {
-        this.broadcasting = false;
-        this.broadcastResult = { type: 'success', text: '✅ Notification sent to all users!' };
-        this.broadcastMsg = '';
-        setTimeout(() => { this.broadcastResult = null; this.cdr.detectChanges(); }, 4000);
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.broadcasting = false;
-        this.broadcastResult = { type: 'error', text: '❌ Broadcast failed.' };
-        this.cdr.detectChanges();
-      }
     });
   }
 
