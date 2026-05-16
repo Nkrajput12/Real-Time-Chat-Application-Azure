@@ -81,6 +81,9 @@ export interface ChatRoom {
   isActive: boolean;
   maxMembers: number;
   memberCount?: number;
+  lastMessage?: string;
+  lastMessageAt?: string;
+  unreadCount?: number;
 }
 
 export interface RoomMember {

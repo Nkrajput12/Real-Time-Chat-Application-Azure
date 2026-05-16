@@ -10,8 +10,10 @@ namespace ConnectHub.Authentication.Repository.Interface;
         Task<User?> FindByUserNameAsync(string userName);
         Task<bool> ExistsByEmailOrUserNameAsync(string emailorUserName);
         Task<IEnumerable<User>> FindAllActiveAsync();
+        Task<IEnumerable<User>> FindAllAsync();
         Task UpdateOnlineStatusAsync(int userId, bool isOnline);
         Task<IEnumerable<User>> SearchUsersAsync(string search);
         Task<User> AddUserAsync(User user);
+        Task DeleteUserAsync(User user);
         Task SaveChangesAsync();
     }

@@ -173,6 +173,22 @@ public class UserService : IUserService
         return true;
     }
 
+    public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
+    {
+        var users = await _repo.FindAllAsync();
+        return users.Select(MapToDto);
+    }
+
+    public async Task<bool> DeleteUserByAdminAsync(int userId)
+    {
+        var user = await _repo.FindByUserIdAsync(userId);
+        if (user == null) return false;
+
+        await _repo.DeleteUserAsync(user);
+        await _repo.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<bool> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
     {
         var user = await _repo.FindByUserIdAsync(userId);

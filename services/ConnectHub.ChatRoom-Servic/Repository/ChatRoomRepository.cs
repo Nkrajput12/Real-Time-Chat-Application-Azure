@@ -70,6 +70,13 @@ public class ChatRoomRepository : IChatRoomRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<ChatRoom>> FindAllRoomsAsync()
+    {
+        return await _context.ChatRooms
+            .Where(r => r.IsActive)
+            .ToListAsync();
+    }
+
     public async Task AddRoomAsync(ChatRoom room)
     {
         await _context.ChatRooms.AddAsync(room);

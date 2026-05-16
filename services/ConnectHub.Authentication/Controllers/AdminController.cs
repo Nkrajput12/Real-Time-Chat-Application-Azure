@@ -7,7 +7,7 @@ namespace ConnectHub.Auth.Controllers
 {
     [ApiController]
     [Route("api/admin")]
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -17,35 +17,41 @@ namespace ConnectHub.Auth.Controllers
             _userService = userService;
         }
 
-        [HttpGet("Get-all-users")]
+        [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllActiveUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
-
-        [HttpGet("users/{username}")]
-        public async Task<IActionResult> GetUserDetail(string username)
+        [HttpDelete("users/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _userService.GetUserByUserNameAsync(username);
-            return user != null ? Ok(user) : NotFound();
+            var success = await _userService.DeleteUserByAdminAsync(id);
+            return success ? Ok(new { message = "User deleted successfully." }) : NotFound();
         }
 
-        [HttpPost("deactivate/{id}")]
-        public async Task<IActionResult> DeactivateUser(int id)
+        [HttpPut("users/{id}/suspend")]
+        public async Task<IActionResult> SuspendUser(int id)
         {
             var success = await _userService.DeactivateAccountAsync(id);
-            if (!success) return NotFound(new { message = "User not found or already inactive." });
-            
-            return Ok(new { message = $"User with ID {id} has been deactivated." });
+            return success ? Ok(new { message = "User account deactivated." }) : NotFound();
         }
 
-        [HttpPost("status")]
-        public async Task<IActionResult> ForceUserOffline(int userId)
+        [HttpGet("analytics")]
+        public async Task<IActionResult> GetAnalytics()
         {
-            await _userService.SetOnlineStatusAsync(userId, false);
-            return Ok(new { message = "User status updated to offline." });
+            var users = await _userService.GetAllUsersAsync();
+            var activeUsers = users.Count(u => u.IsActive);
+            var onlineUsers = users.Count(u => u.IsOnline);
+            
+            return Ok(new {
+                totalUsers = users.Count(),
+                activeUsers = activeUsers,
+                onlineUsers = onlineUsers,
+                deactivatedUsers = users.Count() - activeUsers,
+                liveConnections = onlineUsers
+            });
         }
     }
 }

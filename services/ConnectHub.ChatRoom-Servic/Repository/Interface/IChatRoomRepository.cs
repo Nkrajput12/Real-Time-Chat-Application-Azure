@@ -12,6 +12,7 @@ public interface IChatRoomRepository
     Task<bool> IsUserInRoomAsync(int roomId, int userId);
     Task<int> CountMembersByRoomIdAsync(int roomId);
     Task<IEnumerable<ChatRoom>> FindPublicRoomsAsync();
+    Task<IEnumerable<ChatRoom>> FindAllRoomsAsync();
     Task AddRoomAsync(ChatRoom room);
     Task AddMemberAsync(RoomMember member);
     Task RemoveMemberAsync(int roomId, int userId);

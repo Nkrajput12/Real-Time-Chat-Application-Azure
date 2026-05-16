@@ -7,8 +7,6 @@
 .vs/
 .vscode/
 # .NET Core configuration
-appsettings.Development.json
-appsettings.Production.json
 .gemini/
 .env
 debug.log

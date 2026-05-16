@@ -27,3 +27,22 @@
     .status-active { background: rgba(34,197,94,0.15); color: var(--online-color); }
     .status-suspended { background: rgba(239,68,68,0.15); color: var(--danger-color); }
     .broadcast-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .page { padding: 16px; }
+      .page-header { margin-bottom: 20px; }
+      .tabs { flex-wrap: wrap; width: 100%; }
+      .tab { flex: 1 1 calc(50% - 4px); text-align: center; padding: 10px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+      .stat-card { padding: 16px; }
+      .table-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .table-header .input-field { width: 100% !important; }
+      .broadcast-box { padding: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .tab { flex: 1 1 100%; }
+      .page-title { font-size: 1.4rem; }
+    }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../models';
+import { User, ChatRoom } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
-  // Get all users via admin endpoint; fallback to search with empty query
+  // User methods
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.adminUrl}/users`);
   }
@@ -22,6 +22,15 @@ export class AdminService {
 
   deleteUser(userId: number): Observable<any> {
     return this.http.delete(`${this.adminUrl}/users/${userId}`);
+  }
+
+  // Room methods
+  getAllRooms(): Observable<ChatRoom[]> {
+    return this.http.get<ChatRoom[]>(`${this.adminUrl}/rooms/all-stats`);
+  }
+
+  forceDeleteRoom(roomId: number): Observable<any> {
+    return this.http.delete(`${this.adminUrl}/rooms/force-delete/${roomId}`, { responseType: 'text' });
   }
 
   getAnalytics(): Observable<any> {

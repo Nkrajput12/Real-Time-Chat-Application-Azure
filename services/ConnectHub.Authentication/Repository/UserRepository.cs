@@ -22,7 +22,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> FindByUserIdAsync(int userId)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId && u.IsActive);
+        return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
     }
 
     public async Task<User?> FindByUserNameAsync(string userName)
@@ -38,6 +38,11 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<User>> FindAllActiveAsync()
     {
         return await _context.Users.Where(u => u.IsActive && u.IsOnline).ToListAsync();
+    }
+
+    public async Task<IEnumerable<User>> FindAllAsync()
+    {
+        return await _context.Users.ToListAsync();
     }
 
     public async Task UpdateOnlineStatusAsync(int userId, bool isOnline)
@@ -61,6 +66,12 @@ public class UserRepository : IUserRepository
     {
         await _context.Users.AddAsync(user);
         return user;
+    }
+
+    public async Task DeleteUserAsync(User user)
+    {
+        _context.Users.Remove(user);
+        await Task.CompletedTask;
     }
 
     public async Task SaveChangesAsync()

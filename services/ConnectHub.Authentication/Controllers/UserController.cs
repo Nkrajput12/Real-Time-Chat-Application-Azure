@@ -115,14 +115,20 @@ namespace ConnectHub.Auth.Controllers
             return Ok(new { message = "Status set to offline. Client should discard token." });
         }
 
-        [Authorize]
-        [HttpGet("active")]
-        public async Task<IActionResult> GetActiveUsers()
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin/all")]
+        public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userService.GetAllActiveUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
-        
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("admin/{id}")]
+        public async Task<IActionResult> DeleteUserByAdmin(int id)
+        {
+            var success = await _userService.DeleteUserByAdminAsync(id);
+            return success ? Ok(new { message = "User deleted successfully." }) : NotFound();
+        }
     }
 }

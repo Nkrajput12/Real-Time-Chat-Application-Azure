@@ -8,6 +8,7 @@
       <div class="tabs">
         <button class="tab" [class.active]="tab==='overview'" (click)="tab='overview'">📊 Overview</button>
         <button class="tab" [class.active]="tab==='users'" (click)="tab='users';loadUsers()">👥 Users</button>
+        <button class="tab" [class.active]="tab==='rooms'" (click)="tab='rooms';loadRooms()">🌐 Rooms</button>
         <button class="tab" [class.active]="tab==='broadcast'" (click)="tab='broadcast'">📢 Broadcast</button>
       </div>
 
@@ -20,18 +21,18 @@
             <div class="stat-lbl">Total Users</div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">💬</div>
-            <div class="stat-num">{{ analytics?.totalMessages ?? '—' }}</div>
-            <div class="stat-lbl">Messages Sent</div>
+            <div class="stat-icon">✓</div>
+            <div class="stat-num">{{ analytics?.activeUsers ?? '—' }}</div>
+            <div class="stat-lbl">Active Users</div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">🌐</div>
-            <div class="stat-num">{{ analytics?.activeRooms ?? '—' }}</div>
-            <div class="stat-lbl">Active Rooms</div>
+            <div class="stat-icon">🚫</div>
+            <div class="stat-num">{{ analytics?.deactivatedUsers ?? '—' }}</div>
+            <div class="stat-lbl">Deactivated</div>
           </div>
           <div class="stat-card">
             <div class="stat-icon">⚡</div>
-            <div class="stat-num">{{ connCount }}</div>
+            <div class="stat-num">{{ analytics?.liveConnections ?? '—' }}</div>
             <div class="stat-lbl">Live Connections</div>
           </div>
         </div>
@@ -44,7 +45,7 @@
         <div class="table-card">
           <div class="table-header">
             <div style="font-weight:700">Users ({{ users.length }})</div>
-            <input class="input-field" [(ngModel)]="userSearch" (input)="filterUsers()" placeholder="Search..." style="width:220px;font-size:0.82rem;padding:7px 12px" />
+            <input class="input-field" [(ngModel)]="userSearch" (input)="filterUsers()" placeholder="Search users..." style="width:220px;font-size:0.82rem;padding:7px 12px" />
           </div>
           <div *ngIf="usersLoading" style="padding:40px;display:flex;justify-content:center"><div class="spinner"></div></div>
           <div style="overflow-x:auto" *ngIf="!usersLoading">
@@ -84,6 +85,52 @@
                 </tr>
                 <tr *ngIf="filteredUsers.length === 0">
                   <td colspan="5" style="text-align:center;color:var(--text-muted);padding:30px">No users found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rooms tab -->
+      <div *ngIf="tab === 'rooms'">
+        <div class="table-card">
+          <div class="table-header">
+            <div style="font-weight:700">Rooms ({{ rooms.length }})</div>
+            <input class="input-field" [(ngModel)]="roomSearch" (input)="filterRooms()" placeholder="Search rooms..." style="width:220px;font-size:0.82rem;padding:7px 12px" />
+          </div>
+          <div *ngIf="roomsLoading" style="padding:40px;display:flex;justify-content:center"><div class="spinner"></div></div>
+          <div style="overflow-x:auto" *ngIf="!roomsLoading">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Type</th>
+                  <th>Members</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of filteredRooms">
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="chat-room-icon" style="width:30px;height:30px;font-size:0.8rem">{{ r.roomType === 'PUBLIC' ? '🌐' : '🔒' }}</div>
+                      <div>
+                        <div style="font-weight:600">{{ r.roomName }}</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">{{ r.description || 'No description' }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge">{{ r.roomType }}</span></td>
+                  <td style="color:var(--text-muted)">{{ r.memberCount || 0 }} / {{ r.maxMembers }}</td>
+                  <td style="color:var(--text-muted);font-size:0.75rem">{{ r.createdAt | date:'shortDate' }}</td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" (click)="forceDeleteRoom(r)" title="Force Delete">🗑️</button>
+                  </td>
+                </tr>
+                <tr *ngIf="filteredRooms.length === 0">
+                  <td colspan="5" style="text-align:center;color:var(--text-muted);padding:30px">No rooms found</td>
                 </tr>
               </tbody>
             </table>

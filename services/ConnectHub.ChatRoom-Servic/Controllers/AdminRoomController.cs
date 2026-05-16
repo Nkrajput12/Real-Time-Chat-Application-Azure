@@ -20,7 +20,7 @@ public class AdminRoomController : ControllerBase
     [HttpGet("all-stats")]
     public async Task<IActionResult> GetAllRoomStats()
     {
-        return Ok(await _roomService.GetPublicRoomsAsync());
+        return Ok(await _roomService.GetAllRoomsAsync());
     }
 
     [HttpDelete("force-delete/{roomId}")]

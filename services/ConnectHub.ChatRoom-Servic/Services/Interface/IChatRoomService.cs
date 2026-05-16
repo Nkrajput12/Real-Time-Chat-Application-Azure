@@ -8,6 +8,7 @@ public interface IChatRoomService
     Task<ChatRoom?> GetRoomByIdAsync(int roomId);
     Task<IEnumerable<ChatRoom>> GetRoomsByUserAsync(int userId);
     Task<IEnumerable<ChatRoom>> GetPublicRoomsAsync();
+    Task<IEnumerable<ChatRoom>> GetAllRoomsAsync();
     Task<bool> UpdateRoomAsync(int roomId, ChatRoom updatedRoom);
     Task<bool> DeleteRoomAsync(int roomId);
 

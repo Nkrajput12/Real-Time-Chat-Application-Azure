@@ -52,6 +52,11 @@ public class ChatRoomService : IChatRoomService
         return await _repo.FindPublicRoomsAsync();
     }
 
+    public async Task<IEnumerable<ChatRoom>> GetAllRoomsAsync()
+    {
+        return await _repo.FindAllRoomsAsync();
+    }
+
     public async Task<bool> AddMemberAsync(int roomId, int userId, MemberRole role = MemberRole.MEMBER)
     {
         var room = await _repo.FindByRoomIdAsync(roomId);

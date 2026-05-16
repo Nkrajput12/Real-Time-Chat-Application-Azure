@@ -5,7 +5,7 @@ import { AdminService } from '../../core/services/admin.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { SignalRService } from '../../core/services/signalr.service';
-import { User } from '../../core/models';
+import { User, ChatRoom } from '../../core/models';
 
 @Component({
   selector: 'app-admin',
@@ -23,6 +23,10 @@ export class AdminComponent implements OnInit {
   filteredUsers: User[] = [];
   usersLoading = false;
   userSearch = '';
+  rooms: ChatRoom[] = [];
+  filteredRooms: ChatRoom[] = [];
+  roomsLoading = false;
+  roomSearch = '';
   broadcastMsg = '';
   broadcasting = false;
   broadcastResult: { type: string; text: string } | null = null;
@@ -67,6 +71,25 @@ export class AdminComponent implements OnInit {
     if (!confirm(`Permanently delete @${u.userName}? This cannot be undone.`)) return;
     this.adminService.deleteUser(u.userId).subscribe({
       next: () => { this.users = this.users.filter(x => x.userId !== u.userId); this.filterUsers(); this.cdr.detectChanges(); },
+      error: () => alert('Delete failed.')
+    });
+  }
+
+  loadRooms(): void {
+    if (this.rooms.length > 0) return;
+    this.roomsLoading = true;
+    this.adminService.getAllRooms().subscribe(r => { this.rooms = r; this.filteredRooms = r; this.roomsLoading = false; this.cdr.detectChanges(); });
+  }
+
+  filterRooms(): void {
+    const q = this.roomSearch.toLowerCase();
+    this.filteredRooms = q ? this.rooms.filter(r => r.roomName.toLowerCase().includes(q) || r.description?.toLowerCase().includes(q)) : [...this.rooms];
+  }
+
+  forceDeleteRoom(r: ChatRoom): void {
+    if (!confirm(`Permanently delete room "${r.roomName}"? This cannot be undone.`)) return;
+    this.adminService.forceDeleteRoom(r.roomId).subscribe({
+      next: () => { this.rooms = this.rooms.filter(x => x.roomId !== r.roomId); this.filterRooms(); this.cdr.detectChanges(); },
       error: () => alert('Delete failed.')
     });
   }

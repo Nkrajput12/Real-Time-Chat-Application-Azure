@@ -20,5 +20,7 @@ public interface IUserService
     Task<IEnumerable<UserResponseDto>> SearchUsersAsync(string query);
     Task<bool> SetOnlineStatusAsync(int userId, bool isOnline);
     Task<IEnumerable<UserResponseDto>> GetAllActiveUsersAsync();
+    Task<IEnumerable<UserResponseDto>> GetAllUsersAsync();
     Task<bool> DeactivateAccountAsync(int userId);
+    Task<bool> DeleteUserByAdminAsync(int userId);
 }

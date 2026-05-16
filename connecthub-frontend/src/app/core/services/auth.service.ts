@@ -72,6 +72,15 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/change-password?oldPassword=${encodeURIComponent(oldPassword)}&newPassword=${encodeURIComponent(newPassword)}`, {});
   }
 
+  // Admin methods
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/admin/all`);
+  }
+
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/${userId}`);
+  }
+
   handleOAuthCallback(token: string, userName: string, userId: number): void {
     const res: AuthResponse = {
       token,

@@ -94,8 +94,8 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     });
 
     // Real-time: room message
-    this.signalR.roomMessageReceived$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      // could refresh room badges
+    this.signalR.roomMessageReceived$.pipe(takeUntil(this.destroy$)).subscribe(msg => {
+      this.handleIncomingRoomMessage(msg);
     });
 
     // Presence: Unified state subscription
@@ -164,10 +164,44 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  private handleIncomingRoomMessage(msg: SignalRMessage): void {
+    const room = this.myRooms.find(r => r.roomId === msg.roomId);
+    if (room) {
+      room.lastMessage = msg.content;
+      room.lastMessageAt = msg.timestamp;
+      
+      // Update unread count if we're not currently viewing this room
+      if (msg.senderId !== this.currentUser?.userId && this.activeRoute !== '/chat/room/' + room.roomId) {
+        room.unreadCount = (room.unreadCount || 0) + 1;
+      }
+      
+      // Move to top
+      this.myRooms = [room, ...this.myRooms.filter(r => r !== room)];
+      this.cdr.detectChanges();
+    }
+  }
+
   loadMyRooms(): void {
     this.roomService.getMyRooms().subscribe(rooms => {
       this.myRooms = rooms;
-      rooms.forEach(r => this.signalR.joinRoom(r.roomId));
+      rooms.forEach(r => {
+        this.signalR.joinRoom(r.roomId);
+        // Fetch last message for each room to show in sidebar
+        this.messageService.getRoomMessages(r.roomId).subscribe(msgs => {
+          if (msgs && msgs.length > 0) {
+            const last = msgs[msgs.length - 1];
+            r.lastMessage = last.content;
+            r.lastMessageAt = last.sentAt;
+            // Sort rooms by last message time
+            this.myRooms.sort((a, b) => {
+              const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+              const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+              return timeB - timeA;
+            });
+            this.cdr.detectChanges();
+          }
+        });
+      });
       this.cdr.detectChanges();
     });
   }
@@ -181,7 +215,11 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     this.router.navigate(['/chat/dm', userId]);
   }
 
-  openRoom(roomId: number): void { this.router.navigate(['/chat/room', roomId]); }
+  openRoom(roomId: number): void { 
+    const room = this.myRooms.find(r => r.roomId === roomId);
+    if (room) room.unreadCount = 0;
+    this.router.navigate(['/chat/room', roomId]); 
+  }
 
   isOnline(userId: number): boolean { return this.onlineUserIds.has(userId); }
 
