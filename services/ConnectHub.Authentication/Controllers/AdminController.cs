@@ -34,8 +34,8 @@ namespace ConnectHub.Auth.Controllers
         [HttpPut("users/{id}/suspend")]
         public async Task<IActionResult> SuspendUser(int id)
         {
-            var success = await _userService.DeactivateAccountAsync(id);
-            return success ? Ok(new { message = "User account deactivated." }) : NotFound();
+            var success = await _userService.ToggleUserActiveStatusAsync(id);
+            return success ? Ok(new { message = "User status toggled successfully.", userId = id }) : NotFound();
         }
 
         [HttpGet("analytics")]

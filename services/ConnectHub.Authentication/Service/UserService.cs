@@ -160,7 +160,7 @@ public class UserService : IUserService
         return users.Select(MapToDto);
     }
 
-    public async Task<bool> DeactivateAccountAsync(int userId)
+    public async Task<bool> ToggleUserActiveStatusAsync(int userId)
     {
         var user = await _repo.FindByUserIdAsync(userId);
         if (user == null)
@@ -168,7 +168,7 @@ public class UserService : IUserService
             return false;
         }
 
-        user.IsActive = false;
+        user.IsActive = !user.IsActive;
         await _repo.SaveChangesAsync();
         return true;
     }
